@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MalnutriScan - AI-Powered Malnutrition Detection</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        console.log("[v0] Loading Tailwind config...");
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#0ea5e9',
+                            foreground: '#ffffff'
+                        },
+                        secondary: {
+                            DEFAULT: '#f1f5f9',
+                            foreground: '#0f172a'
+                        },
+                        muted: {
+                            DEFAULT: '#f8fafc',
+                            foreground: '#64748b'
+                        },
+                        background: '#ffffff',
+                        foreground: '#0f172a',
+                        border: '#e2e8f0'
+                    }
+                }
+            }
+        }
+        console.log("[v0] Tailwind config loaded");
+    </script>
+    <style>
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .backdrop-blur-sm {
+            backdrop-filter: blur(4px);
+        }
+        /* Added loading indicator */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <!-- Added loading indicator -->
+        <div class="loading">
+            <div style="text-align: center;">
+                <div style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #0ea5e9; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px;"></div>
+                <p>Loading MalnutriScan...</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/babel">
+        console.log("[v0] Starting React app...");
+        
+        try {
+            const { useState, useRef, useCallback } = React;
+            console.log("[v0] React hooks loaded");
+
+            const Icon = ({ name, className = "h-4 w-4", ...props }) => {
+                const icons = {
+                    camera: "📷",
+                    upload: "📤",
+                    user: "👤",
+                    ruler: "📏",
+                    weight: "⚖️",
+                    calendar: "📅",
+                    check: "✅",
+                    alert: "⚠️",
+                    info: "ℹ️",
+                    activity: "📊",
+                    chart: "📈",
+                    shield: "🛡️",
+                    clock: "🕐",
+                    users: "👥",
+                    arrow: "→",
+                    menu: "☰",
+                    help: "❓",
+                    download: "💾"
+                };
+                
+                return React.createElement('span', {
+                    className: `inline-block ${className}`,
+                    style: { fontSize: '1em' },
+                    ...props
+                }, icons[name] || "•");
+            };
+
+            // UI Components
+            const Button = ({ children, onClick, disabled, variant = "default", className = "", size = "default", ...props }) => {
+                const baseClasses = "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
+                const variants = {
+                    default: "bg-blue-500 text-white hover:bg-blue-600",
+                    outline: "border border-gray-300 bg-white hover:bg-gray-50",
+                    secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200"
+                };
+                const sizes = {
+                    default: "h-10 py-2 px-4",
+                    lg: "h-12 px-8",
+                    sm: "h-8 px-3 text-sm"
+                };
+                
+                return React.createElement('button', {
+                    className: `${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`,
+                    onClick,
+                    disabled,
+                    ...props
+                }, children);
+            };
+
+            const Card = ({ children, className = "" }) => (
+                React.createElement('div', { className: `rounded-lg border border-gray-200 bg-white shadow-sm ${className}` }, children)
+            );
+
+            const CardHeader = ({ children, className = "" }) => (
+                React.createElement('div', { className: `flex flex-col space-y-1.5 p-6 ${className}` }, children)
+            );
+
+            const CardTitle = ({ children, className = "" }) => (
+                React.createElement('h3', { className: `text-2xl font-semibold leading-none tracking-tight ${className}` }, children)
+            );
+
+            const CardDescription = ({ children, className = "" }) => (
+                React.createElement('p', { className: `text-sm text-gray-600 ${className}` }, children)
+            );
+
+            const CardContent = ({ children, className = "" }) => (
+                React.createElement('div', { className: `p-6 pt-0 ${className}` }, children)
+            );
+
+            const Input = ({ className = "", ...props }) => (
+                React.createElement('input', {
+                    className: `flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`,
+                    ...props
+                })
+            );
+
+            const Label = ({ children, className = "", ...props }) => (
+                React.createElement('label', {
+                    className: `text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${className}`,
+                    ...props
+                }, children)
+            );
+
+            const Select = ({ children, value, onValueChange }) => {
+                const [isOpen, setIsOpen] = useState(false);
+                return React.createElement('div', { className: 'relative' }, [
+                    React.createElement('button', {
+                        key: 'trigger',
+                        className: 'flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+                        onClick: () => setIsOpen(!isOpen)
+                    }, value || 'Select gender'),
+                    isOpen && React.createElement('div', {
+                        key: 'content',
+                        className: 'absolute top-full left-0 right-0 z-50 mt-1 rounded-md border border-gray-300 bg-white shadow-lg'
+                    }, children.map((child, index) => 
+                        React.createElement('div', {
+                            key: index,
+                            className: 'px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer',
+                            onClick: () => {
+                                onValueChange(child.props.value);
+                                setIsOpen(false);
+                            }
+                        }, child.props.children)
+                    ))
+                ]);
+            };
+
+            const SelectItem = ({ value, children }) => ({ value, children });
+
+            const Alert = ({ children, className = "" }) => (
+                React.createElement('div', { className: `relative w-full rounded-lg border p-4 ${className}` }, children)
+            );
+
+            const AlertDescription = ({ children, className = "" }) => (
+                React.createElement('div', { className: `text-sm ${className}` }, children)
+            );
+
+            const Badge = ({ children, variant = "default", className = "" }) => {
+                const variants = {
+                    default: "bg-blue-500 text-white",
+                    outline: "border border-gray-300 bg-white",
+                    secondary: "bg-gray-100 text-gray-900",
+                    destructive: "bg-red-500 text-white"
+                };
+                return React.createElement('div', {
+                    className: `inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors ${variants[variant]} ${className}`
+                }, children);
+            };
+
+            const Progress = ({ value, className = "" }) => (
+                React.createElement('div', { className: `relative h-4 w-full overflow-hidden rounded-full bg-gray-200 ${className}` }, [
+                    React.createElement('div', {
+                        key: 'progress',
+                        className: 'h-full bg-blue-500 transition-all',
+                        style: { width: `${value}%` }
+                    })
+                ])
+            );
+
+            // Professional Header Component
+            const ProfessionalHeader = ({ onShowTour }) => (
+                React.createElement('header', { className: 'border-b border-gray-200 bg-white' }, [
+                    React.createElement('div', { key: 'container', className: 'mx-auto max-w-7xl px-6 py-4' }, [
+                        React.createElement('div', { key: 'content', className: 'flex items-center justify-between' }, [
+                            React.createElement('div', { key: 'logo', className: 'flex items-center gap-3' }, [
+                                React.createElement('div', { key: 'icon', className: 'w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center' }, 
+                                    React.createElement(Icon, { name: 'chart', className: 'text-white text-lg' })
+                                ),
+                                React.createElement('div', { key: 'text' }, [
+                                    React.createElement('h1', { key: 'title', className: 'text-xl font-bold text-gray-900' }, 'MalnutriScan'),
+                                    React.createElement('p', { key: 'subtitle', className: 'text-xs text-gray-600' }, 'AI-Powered Malnutrition Detection')
+                                ])
+                            ]),
+                            React.createElement('div', { key: 'actions', className: 'flex items-center gap-3' }, [
+                                React.createElement(Button, {
+                                    key: 'help',
+                                    variant: 'outline',
+                                    size: 'sm',
+                                    onClick: onShowTour
+                                }, [
+                                    React.createElement(Icon, { key: 'icon', name: 'help', className: 'mr-2' }),
+                                    'Help'
+                                ])
+                            ])
+                        ])
+                    ])
+                ])
+            );
+
+            // Onboarding Tour Component
+            const OnboardingTour = ({ onComplete }) => {
+                const [currentSlide, setCurrentSlide] = useState(0);
+
+                const slides = [
+                    {
+                        title: "Welcome to MalnutriScan",
+                        subtitle: "AI-Powered Malnutrition Detection System",
+                        content: React.createElement('div', { className: 'text-center space-y-6' }, [
+                            React.createElement('div', { key: 'icon', className: 'mx-auto w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center' },
+                                React.createElement(Icon, { name: 'chart', className: 'text-blue-500 text-3xl' })
+                            ),
+                            React.createElement('div', { key: 'content', className: 'space-y-4' }, [
+                                React.createElement('p', { key: 'desc', className: 'text-lg text-gray-600 leading-relaxed' },
+                                    'A professional screening tool designed for healthcare workers, teachers, and community volunteers to identify potential malnutrition in children.'
+                                ),
+                                React.createElement('div', { key: 'badges', className: 'flex flex-wrap justify-center gap-2' }, [
+                                    React.createElement(Badge, { key: 'hipaa', variant: 'secondary', className: 'px-3 py-1' }, [
+                                        React.createElement(Icon, { key: 'icon', name: 'shield', className: 'mr-1' }),
+                                        'HIPAA Compliant'
+                                    ]),
+                                    React.createElement(Badge, { key: 'time', variant: 'secondary', className: 'px-3 py-1' }, [
+                                        React.createElement(Icon, { key: 'icon', name: 'clock', className: 'mr-1' }),
+                                        '2-3 Minutes'
+                                    ]),
+                                    React.createElement(Badge, { key: 'community', variant: 'secondary', className: 'px-3 py-1' }, [
+                                        React.createElement(Icon, { key: 'icon', name: 'users', className: 'mr-1' }),
+                                        'Community Ready'
+                                    ])
+                                ])
+                            ])
+                        ])
+                    },
+                    {
+                        title: "How It Works",
+                        subtitle: "Simple 3-Step Process",
+                        content: React.createElement('div', { className: 'space-y-6' }, [
+                            React.createElement('div', { key: 'steps', className: 'grid gap-4' }, [
+                                React.createElement('div', { key: 'step1', className: 'flex items-start gap-4 p-4 rounded-lg bg-gray-50' }, [
+                                    React.createElement('div', { key: 'number', className: 'w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm' }, '1'),
+                                    React.createElement('div', { key: 'content' }, [
+                                        React.createElement('h4', { key: 'title', className: 'font-semibold flex items-center gap-2' }, [
+                                            React.createElement(Icon, { key: 'icon', name: 'camera' }),
+                                            'Photo Capture'
+                                        ]),
+                                        React.createElement('p', { key: 'desc', className: 'text-sm text-gray-600' }, 'Take or upload a clear photo of the child')
+                                    ])
+                                ]),
+                                React.createElement('div', { key: 'step2', className: 'flex items-start gap-4 p-4 rounded-lg bg-gray-50' }, [
+                                    React.createElement('div', { key: 'number', className: 'w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm' }, '2'),
+                                    React.createElement('div', { key: 'content' }, [
+                                        React.createElement('h4', { key: 'title', className: 'font-semibold flex items-center gap-2' }, [
+                                            React.createElement(Icon, { key: 'icon', name: 'user' }),
+                                            'Biometric Data'
+                                        ]),
+                                        React.createElement('p', { key: 'desc', className: 'text-sm text-gray-600' }, 'Enter age, gender, height, and weight measurements')
+                                    ])
+                                ]),
+                                React.createElement('div', { key: 'step3', className: 'flex items-start gap-4 p-4 rounded-lg bg-gray-50' }, [
+                                    React.createElement('div', { key: 'number', className: 'w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm' }, '3'),
+                                    React.createElement('div', { key: 'content' }, [
+                                        React.createElement('h4', { key: 'title', className: 'font-semibold flex items-center gap-2' }, [
+                                            React.createElement(Icon, { key: 'icon', name: 'chart' }),
+                                            'AI Analysis'
+                                        ]),
+                                        React.createElement('p', { key: 'desc', className: 'text-sm text-gray-600' }, 'Get instant results with actionable recommendations')
+                                    ])
+                                ])
+                            ])
+                        ])
+                    },
+                    {
+                        title: "Important Guidelines",
+                        subtitle: "Best Practices for Accurate Results",
+                        content: React.createElement('div', { className: 'space-y-4' }, [
+                            React.createElement('div', { key: 'guidelines', className: 'space-y-3' }, [
+                                React.createElement('div', { key: 'photo', className: 'flex items-start gap-3' }, [
+                                    React.createElement(Icon, { key: 'icon', name: 'check', className: 'text-green-600 mt-0.5 flex-shrink-0' }),
+                                    React.createElement('div', { key: 'content' }, [
+                                        React.createElement('p', { key: 'title', className: 'font-medium' }, 'Photo Quality'),
+                                        React.createElement('p', { key: 'desc', className: 'text-sm text-gray-600' }, 'Ensure good lighting and clear visibility of the child\'s face and body')
+                                    ])
+                                ]),
+                                React.createElement('div', { key: 'measurements', className: 'flex items-start gap-3' }, [
+                                    React.createElement(Icon, { key: 'icon', name: 'check', className: 'text-green-600 mt-0.5 flex-shrink-0' }),
+                                    React.createElement('div', { key: 'content' }, [
+                                        React.createElement('p', { key: 'title', className: 'font-medium' }, 'Accurate Measurements'),
+                                        React.createElement('p', { key: 'desc', className: 'text-sm text-gray-600' }, 'Use calibrated scales and measuring tools for precise height and weight')
+                                    ])
+                                ]),
+                                React.createElement('div', { key: 'privacy', className: 'flex items-start gap-3' }, [
+                                    React.createElement(Icon, { key: 'icon', name: 'shield', className: 'text-green-600 mt-0.5 flex-shrink-0' }),
+                                    React.createElement('div', { key: 'content' }, [
+                                        React.createElement('p', { key: 'title', className: 'font-medium' }, 'Privacy Protection'),
+                                        React.createElement('p', { key: 'desc', className: 'text-sm text-gray-600' }, 'All data is processed locally and not stored on external servers')
+                                    ])
+                                ]),
+                                React.createElement('div', { key: 'consultation', className: 'flex items-start gap-3' }, [
+                                    React.createElement(Icon, { key: 'icon', name: 'check', className: 'text-green-600 mt-0.5 flex-shrink-0' }),
+                                    React.createElement('div', { key: 'content' }, [
+                                        React.createElement('p', { key: 'title', className: 'font-medium' }, 'Professional Consultation'),
+                                        React.createElement('p', { key: 'desc', className: 'text-sm text-gray-600' }, 'Always follow up with qualified healthcare professionals for diagnosis')
+                                    ])
+                                ])
+                            ])
+                        ])
+                    }
+                ];
+
+                const nextSlide = () => {
+                    if (currentSlide < slides.length - 1) {
+                        setCurrentSlide(currentSlide + 1);
+                    } else {
+                        onComplete();
+                    }
+                };
+
+                const prevSlide = () => {
+                    if (currentSlide > 0) {
+                        setCurrentSlide(currentSlide - 1);
+                    }
+                };
+
+                return React.createElement('div', { className: 'fixed inset-0 bg-white bg-opacity-95 z-50 flex items-center justify-center p-4' }, [
+                    React.createElement(Card, { key: 'card', className: 'w-full max-w-2xl' }, [
+                        React.createElement(CardHeader, { key: 'header', className: 'text-center' }, [
+                            React.createElement('div', { key: 'progress', className: 'flex items-center justify-between mb-4' }, [
+                                React.createElement('div', { key: 'dots', className: 'flex space-x-2' }, 
+                                    slides.map((_, index) => 
+                                        React.createElement('div', {
+                                            key: index,
+                                            className: `w-2 h-2 rounded-full transition-colors ${index === currentSlide ? 'bg-blue-500' : 'bg-gray-300'}`
+                                        })
+                                    )
+                                ),
+                                React.createElement(Badge, { key: 'counter', variant: 'outline', className: 'text-xs' }, `${currentSlide + 1} of ${slides.length}`)
+                            ]),
+                            React.createElement(CardTitle, { key: 'title', className: 'text-2xl' }, slides[currentSlide].title),
+                            React.createElement(CardDescription, { key: 'subtitle', className: 'text-base' }, slides[currentSlide].subtitle)
+                        ]),
+                        React.createElement(CardContent, { key: 'content' }, [
+                            React.createElement('div', { key: 'slide', className: 'min-h-[300px] flex items-center justify-center' }, slides[currentSlide].content),
+                            React.createElement('div', { key: 'navigation', className: 'flex justify-between items-center mt-8' }, [
+                                React.createElement(Button, {
+                                    key: 'prev',
+                                    variant: 'outline',
+                                    onClick: prevSlide,
+                                    disabled: currentSlide === 0,
+                                    className: 'min-w-[100px]'
+                                }, 'Previous'),
+                                React.createElement(Button, {
+                                    key: 'next',
+                                    onClick: nextSlide,
+                                    className: 'min-w-[100px]'
+                                }, [
+                                    currentSlide === slides.length - 1 ? 'Get Started' : 'Next',
+                                    React.createElement(Icon, { key: 'arrow', name: 'arrow', className: 'ml-2' })
+                                ])
+                            ])
+                        ])
+                    ])
+                ]);
+            };
+
+            // Results Export Component
+            const ResultsExport = ({ analysisResult, biometricData }) => {
+                const exportResults = () => {
+                    const data = {
+                        timestamp: new Date().toISOString(),
+                        biometricData,
+                        analysisResult
+                    };
+                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `malnutrition-screening-${Date.now()}.json`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                };
+
+                return React.createElement(Card, { className: 'shadow-lg' }, [
+                    React.createElement(CardHeader, { key: 'header' }, [
+                        React.createElement(CardTitle, { key: 'title', className: 'flex items-center gap-2 text-lg' }, [
+                            React.createElement(Icon, { key: 'icon', name: 'download' }),
+                            'Export Results'
+                        ]),
+                        React.createElement(CardDescription, { key: 'desc' }, 'Download screening results for medical records or follow-up')
+                    ]),
+                    React.createElement(CardContent, { key: 'content' }, [
+                        React.createElement(Button, {
+                            key: 'export',
+                            onClick: exportResults,
+                            className: 'w-full'
+                        }, [
+                            React.createElement(Icon, { key: 'icon', name: 'download', className: 'mr-2' }),
+                            'Download Report (JSON)'
+                        ])
+                    ])
+                ]);
+            };
+
+            // Main App Component
+            const MalnutritionDetectionApp = () => {
+                console.log("[v0] Rendering main app component");
+                
+                const [showTour, setShowTour] = useState(true);
+                const [currentStep, setCurrentStep] = useState("capture");
+                const [capturedImage, setCapturedImage] = useState(null);
+                const [isProcessing, setIsProcessing] = useState(false);
+                const [biometricData, setBiometricData] = useState({
+                    age: "",
+                    gender: "",
+                    height: "",
+                    weight: "",
+                });
+                const [analysisResult, setAnalysisResult] = useState(null);
+                const fileInputRef = useRef(null);
+
+                const handleImageUpload = useCallback((event) => {
+                    const file = event.target.files?.[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            setCapturedImage(e.target?.result);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                }, []);
+
+                const handleBiometricChange = (field, value) => {
+                    setBiometricData((prev) => ({ ...prev, [field]: value }));
+                };
+
+                const isDataComplete = () => {
+                    return capturedImage && biometricData.age && biometricData.gender && biometricData.height && biometricData.weight;
+                };
+
+                const simulateAnalysis = async () => {
+                    setIsProcessing(true);
+                    await new Promise((resolve) => setTimeout(resolve, 4000));
+
+                    const age = parseInt(biometricData.age);
+                    const height = parseFloat(biometricData.height);
+                    const weight = parseFloat(biometricData.weight);
+                    const heightInMeters = height / 100;
+                    const bmi = weight / (heightInMeters * heightInMeters);
+
+                    let classification = "normal";
+                    let recommendations = [];
+                    let riskFactors = [];
+                    let followUpActions = [];
+
+                    if (weight < age * 2 + 6) {
+                        classification = "underweight";
+                        recommendations = [
+                            "Immediate nutritional intervention required",
+                            "Increase caloric intake with protein-rich foods",
+                            "Monitor weight weekly and track progress",
+                            "Consider therapeutic feeding programs",
+                        ];
+                        riskFactors = ["Low weight-for-age", "Potential acute malnutrition"];
+                        followUpActions = ["Refer to pediatric nutritionist", "Schedule follow-up in 2 weeks"];
+                    } else if (height < age * 5.5 + 60) {
+                        classification = "stunted";
+                        recommendations = [
+                            "Focus on long-term nutritional support",
+                            "Ensure adequate protein and micronutrient intake",
+                            "Promote physical activity and adequate sleep",
+                            "Address underlying health conditions",
+                        ];
+                        riskFactors = ["Low height-for-age", "Chronic malnutrition indicators"];
+                        followUpActions = ["Comprehensive health assessment", "Monthly growth monitoring"];
+                    } else if (bmi < 14) {
+                        classification = "wasted";
+                        recommendations = [
+                            "Urgent nutritional rehabilitation needed",
+                            "High-energy, nutrient-dense foods required",
+                            "Medical evaluation for underlying causes",
+                            "Close monitoring for complications",
+                        ];
+                        riskFactors = ["Low weight-for-height", "Acute malnutrition"];
+                        followUpActions = ["Immediate medical referral", "Daily monitoring"];
+                    } else {
+                        recommendations = [
+                            "Continue current nutrition practices",
+                            "Maintain balanced diet with variety",
+                            "Ensure regular physical activity",
+                            "Schedule routine health check-ups",
+                        ];
+                        followUpActions = ["Routine monitoring every 3 months"];
+                    }
+
+                    setAnalysisResult({
+                        classification,
+                        confidence: Math.random() * 15 + 85,
+                        recommendations,
+                        riskFactors,
+                        followUpActions,
+                    });
+
+                    setIsProcessing(false);
+                    setCurrentStep("results");
+                };
+
+                const resetApp = () => {
+                    setCurrentStep("capture");
+                    setCapturedImage(null);
+                    setBiometricData({ age: "", gender: "", height: "", weight: "" });
+                    setAnalysisResult(null);
+                    setIsProcessing(false);
+                };
+
+                const getResultIcon = (classification) => {
+                    switch (classification) {
+                        case "normal":
+                            return React.createElement(Icon, { name: 'check', className: 'text-green-600 text-2xl' });
+                        case "stunted":
+                            return React.createElement(Icon, { name: 'alert', className: 'text-yellow-600 text-2xl' });
+                        case "wasted":
+                            return React.createElement(Icon, { name: 'alert', className: 'text-orange-600 text-2xl' });
+                        case "underweight":
+                            return React.createElement(Icon, { name: 'alert', className: 'text-red-600 text-2xl' });
+                        default:
+                            return React.createElement(Icon, { name: 'info', className: 'text-gray-600 text-2xl' });
+                    }
+                };
+
+                if (showTour) {
+                    return React.createElement(OnboardingTour, { onComplete: () => setShowTour(false) });
+                }
+
+                return React.createElement('div', { className: 'min-h-screen bg-gray-50' }, [
+                    React.createElement(ProfessionalHeader, { key: 'header', onShowTour: () => setShowTour(true) }),
+                    React.createElement('div', { key: 'main', className: 'mx-auto max-w-4xl p-6' }, [
+                        // Progress section
+                        React.createElement('div', { key: 'progress', className: 'mb-8' }, [
+                            React.createElement('div', { key: 'header', className: 'flex items-center justify-between mb-4' }, [
+                                React.createElement('div', { key: 'title', className: 'flex items-center gap-4' }, [
+                                    React.createElement('h2', { key: 'text', className: 'text-2xl font-semibold text-gray-900' },
+                                        currentStep === "capture" ? "Photo Capture" : currentStep === "input" ? "Biometric Data" : "Analysis Results"
+                                    ),
+                                    React.createElement(Badge, { key: 'step', variant: 'outline', className: 'px-3 py-1' },
+                                        `Step ${currentStep === "capture" ? "1" : currentStep === "input" ? "2" : "3"} of 3`
+                                    )
+                                ]),
+                                React.createElement('div', { key: 'desc', className: 'text-sm text-gray-600' },
+                                    currentStep === "capture" ? "Take or upload a clear photo" :
+                                    currentStep === "input" ? "Enter child's measurements" : "Review analysis results"
+                                )
+                            ]),
+                            React.createElement(Progress, { key: 'bar', value: currentStep === "capture" ? 33 : currentStep === "input" ? 66 : 100, className: 'h-3' })
+                        ]),
+
+                        // Step 1: Photo Capture
+                        currentStep === "capture" && React.createElement(Card, { key: 'capture', className: 'shadow-lg' }, [
+                            React.createElement(CardHeader, { key: 'header' }, [
+                                React.createElement(CardTitle, { key: 'title', className: 'flex items-center gap-2 text-xl' }, [
+                                    React.createElement(Icon, { key: 'icon', name: 'camera', className: 'text-lg' }),
+                                    'Photo Capture'
+                                ]),
+                                React.createElement(CardDescription, { key: 'desc', className: 'text-base' },
+                                    'Take a clear, well-lit photo of the child or upload an existing image for analysis'
+                                )
+                            ]),
+                            React.createElement(CardContent, { key: 'content', className: 'space-y-6' }, [
+                                capturedImage ? React.createElement('div', { key: 'preview', className: 'space-y-4' }, [
+                                    React.createElement('div', { key: 'image', className: 'relative' }, [
+                                        React.createElement('img', {
+                                            key: 'img',
+                                            src: capturedImage,
+                                            alt: 'Captured child',
+                                            className: 'w-full h-80 object-cover rounded-lg border-2 border-gray-200'
+                                        }),
+                                        React.createElement(Badge, { key: 'badge', className: 'absolute top-3 right-3 bg-green-600' }, [
+                                            React.createElement(Icon, { key: 'icon', name: 'check', className: 'mr-1' }),
+                                            'Image Ready'
+                                        ])
+                                    ]),
+                                    React.createElement('div', { key: 'actions', className: 'flex gap-3' }, [
+                                        React.createElement(Button, {
+                                            key: 'retake',
+                                            variant: 'outline',
+                                            onClick: () => setCapturedImage(null),
+                                            className: 'flex-1'
+                                        }, [
+                                            React.createElement(Icon, { key: 'icon', name: 'camera', className: 'mr-2' }),
+                                            'Retake Photo'
+                                        ]),
+                                        React.createElement(Button, {
+                                            key: 'continue',
+                                            onClick: () => setCurrentStep("input"),
+                                            className: 'flex-1'
+                                        }, 'Continue to Data Entry')
+                                    ])
+                                ]) : React.createElement('div', { key: 'upload', className: 'space-y-6' }, [
+                                    React.createElement('div', { key: 'dropzone', className: 'border-2 border-dashed border-gray-300 rounded-lg p-12 text-center hover:border-blue-400 transition-colors' }, [
+                                        React.createElement(Icon, { key: 'icon', name: 'upload', className: 'text-6xl mx-auto text-gray-400 mb-4' }),
+                                        React.createElement('p', { key: 'title', className: 'text-lg font-medium mb-2' }, 'Upload Child\'s Photo'),
+                                        React.createElement('p', { key: 'desc', className: 'text-gray-600 mb-6' }, 'Click to upload or drag and drop an image file'),
+                                        React.createElement(Button, {
+                                            key: 'button',
+                                            onClick: () => fileInputRef.current?.click(),
+                                            size: 'lg'
+                                        }, [
+                                            React.createElement(Icon, { key: 'icon', name: 'upload', className: 'mr-2' }),
+                                            'Choose File'
+                                        ]),
+                                        React.createElement('input', {
+                                            key: 'input',
+                                            ref: fileInputRef,
+                                            type: 'file',
+                                            accept: 'image/*',
+                                            onChange: handleImageUpload,
+                                            className: 'hidden'
+                                        })
+                                    ]),
+                                    React.createElement(Alert, { key: 'alert', className: 'border-blue-200 bg-blue-50' }, [
+                                        React.createElement(Icon, { key: 'icon', name: 'info' }),
+                                        React.createElement(AlertDescription, { key: 'desc', className: 'text-base' }, [
+                                            React.createElement('strong', { key: 'bold' }, 'Photo Guidelines: '),
+                                            'Ensure good lighting, clear visibility of the child\'s face and body, and avoid shadows or blurry images for optimal analysis accuracy.'
+                                        ])
+                                    ])
+                                ])
+                            ])
+                        ]),
+
+                        // Step 2: Data Input
+                        currentStep === "input" && React.createElement(Card, { key: 'input', className: 'shadow-lg' }, [
+                            React.createElement(CardHeader, { key: 'header' }, [
+                                React.createElement(CardTitle, { key: 'title', className: 'flex items-center gap-2 text-xl' }, [
+                                    React.createElement(Icon, { key: 'icon', name: 'user', className: 'text-lg' }),
+                                    'Biometric Data Entry'
+                                ]),
+                                React.createElement(CardDescription, { key: 'desc', className: 'text-base' },
+                                    'Please provide accurate measurements for the child being screened'
+                                )
+                            ]),
+                            React.createElement(CardContent, { key: 'content', className: 'space-y-6' }, [
+                                React.createElement('div', { key: 'grid', className: 'grid grid-cols-1 md:grid-cols-2 gap-6' }, [
+                                    React.createElement('div', { key: 'age', className: 'space-y-3' }, [
+                                        React.createElement(Label, { key: 'label', htmlFor: 'age', className: 'flex items-center gap-2 text-base font-medium' }, [
+                                            React.createElement(Icon, { key: 'icon', name: 'calendar' }),
+                                            'Age (months)'
+                                        ]),
+                                        React.createElement(Input, {
+                                            key: 'input',
+                                            id: 'age',
+                                            type: 'number',
+                                            placeholder: 'e.g., 24',
+                                            value: biometricData.age,
+                                            onChange: (e) => handleBiometricChange("age", e.target.value),
+                                            className: 'h-12 text-base'
+                                        })
+                                    ]),
+                                    React.createElement('div', { key: 'gender', className: 'space-y-3' }, [
+                                        React.createElement(Label, { key: 'label', htmlFor: 'gender', className: 'text-base font-medium' }, 'Gender'),
+                                        React.createElement(Select, {
+                                            key: 'select',
+                                            value: biometricData.gender,
+                                            onValueChange: (value) => handleBiometricChange("gender", value)
+                                        }, [
+                                            React.createElement(SelectItem, { key: 'male', value: 'male' }, 'Male'),
+                                            React.createElement(SelectItem, { key: 'female', value: 'female' }, 'Female')
+                                        ])
+                                    ]),
+                                    React.createElement('div', { key: 'height', className: 'space-y-3' }, [
+                                        React.createElement(Label, { key: 'label', htmlFor: 'height', className: 'flex items-center gap-2 text-base font-medium' }, [
+                                            React.createElement(Icon, { key: 'icon', name: 'ruler' }),
+                                            'Height (cm)'
+                                        ]),
+                                        React.createElement(Input, {
+                                            key: 'input',
+                                            id: 'height',
+                                            type: 'number',
+                                            placeholder: 'e.g., 85.5',
+                                            value: biometricData.height,
+                                            onChange: (e) => handleBiometricChange("height", e.target.value),
+                                            className: 'h-12 text-base'
+                                        })
+                                    ]),
+                                    React.createElement('div', { key: 'weight', className: 'space-y-3' }, [
+                                        React.createElement(Label, { key: 'label', htmlFor: 'weight', className: 'flex items-center gap-2 text-base font-medium' }, [
+                                            React.createElement(Icon, { key: 'icon', name: 'weight' }),
+                                            'Weight (kg)'
+                                        ]),
+                                        React.createElement(Input, {
+                                            key: 'input',
+                                            id: 'weight',
+                                            type: 'number',
+                                            step: '0.1',
+                                            placeholder: 'e.g., 12.5',
+                                            value: biometricData.weight,
+                                            onChange: (e) => handleBiometricChange("weight", e.target.value),
+                                            className: 'h-12 text-base'
+                                        })
+                                    ])
+                                ]),
+                                React.createElement('div', { key: 'actions', className: 'flex gap-3 pt-4' }, [
+                                    React.createElement(Button, {
+                                        key: 'back',
+                                        variant: 'outline',
+                                        onClick: () => setCurrentStep("capture"),
+                                        className: 'flex-1 h-12'
+                                    }, 'Back to Photo'),
+                                    React.createElement(Button, {
+                                        key: 'analyze',
+                                        onClick: simulateAnalysis,
+                                        disabled: !isDataComplete() || isProcessing,
+                                        className: 'flex-1 h-12'
+                                    }, isProcessing ? [
+                                        React.createElement(Icon, { key: 'icon', name: 'activity', className: 'mr-2 animate-spin' }),
+                                        'Analyzing...'
+                                    ] : 'Start Analysis')
+                                ]),
+                                !isDataComplete() && React.createElement(Alert, { key: 'warning', className: 'border-yellow-200 bg-yellow-50' }, [
+                                    React.createElement(Icon, { key: 'icon', name: 'info' }),
+                                    React.createElement(AlertDescription, { key: 'desc', className: 'text-base' },
+                                        'Please complete all fields and ensure a photo is uploaded before proceeding with the analysis.'
+                                    )
+                                ])
+                            ])
+                        ]),
+
+                        // Processing State
+                        isProcessing && React.createElement(Card, { key: 'processing', className: 'shadow-lg' }, [
+                            React.createElement(CardContent, { key: 'content', className: 'p-12 text-center' }, [
+                                React.createElement('div', { key: 'spinner', className: 'animate-spin rounded-full h-16 w-16 border-b-4 border-blue-500 mx-auto mb-6' }),
+                                React.createElement('h3', { key: 'title', className: 'text-xl font-semibold mb-3' }, 'Processing Analysis'),
+                                React.createElement('p', { key: 'desc', className: 'text-gray-600 text-base mb-4' },
+                                    'Our AI system is analyzing the image and biometric data...'
+                                ),
+                                React.createElement('div', { key: 'progress', className: 'max-w-md mx-auto' }, [
+                                    React.createElement(Progress, { key: 'bar', value: 75, className: 'h-2' }),
+                                    React.createElement('p', { key: 'text', className: 'text-sm text-gray-600 mt-2' }, 'This may take a few moments')
+                                ])
+                            ])
+                        ]),
+
+                        // Step 3: Results
+                        currentStep === "results" && analysisResult && React.createElement('div', { key: 'results', className: 'space-y-6' }, [
+                            React.createElement(Card, { key: 'main', className: 'shadow-lg' }, [
+                                React.createElement(CardHeader, { key: 'header' }, [
+                                    React.createElement(CardTitle, { key: 'title', className: 'flex items-center gap-2 text-xl' }, [
+                                        getResultIcon(analysisResult.classification),
+                                        'Analysis Results'
+                                    ]),
+                                    React.createElement(CardDescription, { key: 'desc', className: 'text-base' },
+                                        'Based on AI analysis of the provided image and biometric measurements'
+                                    )
+                                ]),
+                                React.createElement(CardContent, { key: 'content', className: 'space-y-8' }, [
+                                    React.createElement('div', { key: 'result', className: 'text-center p-6 bg-gray-100 rounded-lg' }, [
+                                        React.createElement(Badge, {
+                                            key: 'badge',
+                                            variant: analysisResult.classification === "normal" ? "default" : "destructive",
+                                            className: 'text-xl px-6 py-3 mb-4'
+                                        }, analysisResult.classification.toUpperCase()),
+                                        React.createElement('p', { key: 'confidence', className: 'text-lg font-medium mb-2' },
+                                            `Confidence Level: ${analysisResult.confidence.toFixed(1)}%`
+                                        ),
+                                        React.createElement(Progress, { key: 'progress', value: analysisResult.confidence, className: 'w-48 mx-auto' })
+                                    ]),
+                                    React.createElement('div', { key: 'details', className: 'grid gap-6 md:grid-cols-2' }, [
+                                        React.createElement('div', { key: 'recommendations', className: 'space-y-4' }, [
+                                            React.createElement('h4', { key: 'title', className: 'font-semibold text-lg flex items-center gap-2' }, [
+                                                React.createElement(Icon, { key: 'icon', name: 'check', className: 'text-blue-500' }),
+                                                'Recommendations'
+                                            ]),
+                                            React.createElement('ul', { key: 'list', className: 'space-y-3' },
+                                                analysisResult.recommendations.map((rec, index) =>
+                                                    React.createElement('li', { key: index, className: 'flex items-start gap-3 p-3 bg-gray-50 rounded-lg' }, [
+                                                        React.createElement('div', { key: 'number', className: 'w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5' },
+                                                            React.createElement('span', { key: 'text', className: 'text-xs font-semibold text-blue-600' }, index + 1)
+                                                        ),
+                                                        React.createElement('span', { key: 'text', className: 'text-sm text-gray-900 leading-relaxed' }, rec)
+                                                    ])
+                                                )
+                                            )
+                                        ]),
+                                        analysisResult.riskFactors && React.createElement('div', { key: 'risks', className: 'space-y-4' }, [
+                                            React.createElement('h4', { key: 'title', className: 'font-semibold text-lg flex items-center gap-2' }, [
+                                                React.createElement(Icon, { key: 'icon', name: 'alert', className: 'text-orange-500' }),
+                                                'Risk Factors'
+                                            ]),
+                                            React.createElement('ul', { key: 'list', className: 'space-y-2' },
+                                                analysisResult.riskFactors.map((factor, index) =>
+                                                    React.createElement('li', { key: index, className: 'flex items-center gap-2 text-sm' }, [
+                                                        React.createElement('div', { key: 'dot', className: 'w-2 h-2 bg-orange-500 rounded-full' }),
+                                                        factor
+                                                    ])
+                                                )
+                                            )
+                                        ])
+                                    ]),
+                                    analysisResult.followUpActions && React.createElement('div', { key: 'followup', className: 'space-y-4' }, [
+                                        React.createElement('h4', { key: 'title', className: 'font-semibold text-lg' }, 'Follow-up Actions'),
+                                        React.createElement('div', { key: 'actions', className: 'flex flex-wrap gap-2' },
+                                            analysisResult.followUpActions.map((action, index) =>
+                                                React.createElement(Badge, { key: index, variant: 'outline', className: 'px-3 py-1' }, action)
+                                            )
+                                        )
+                                    ]),
+                                    React.createElement(Alert, { key: 'disclaimer', className: 'border-blue-200 bg-blue-50' }, [
+                                        React.createElement(Icon, { key: 'icon', name: 'info' }),
+                                        React.createElement(AlertDescription, { key: 'desc', className: 'text-base' }, [
+                                            React.createElement('strong', { key: 'bold' }, 'Medical Disclaimer: '),
+                                            'This screening tool provides preliminary assessment only. Always consult with qualified healthcare professionals for proper diagnosis, treatment planning, and medical care.'
+                                        ])
+                                    ]),
+                                    React.createElement('div', { key: 'actions', className: 'flex gap-3' }, [
+                                        React.createElement(Button, {
+                                            key: 'reset',
+                                            onClick: resetApp,
+                                            variant: 'outline',
+                                            className: 'flex-1 h-12'
+                                        }, 'Screen Another Child'),
+                                        React.createElement(Button, { key: 'save', className: 'flex-1 h-12' }, 'Save Results')
+                                    ])
+                                ])
+                            ]),
+                            React.createElement(ResultsExport, { key: 'export', analysisResult, biometricData })
+                        ])
+                    ])
+                ]);
+            };
+
+            console.log("[v0] About to render app...");
+            // Render the app
+            ReactDOM.render(React.createElement(MalnutritionDetectionApp), document.getElementById('root'));
+            console.log("[v0] App rendered successfully!");
+
+        } catch (error) {
+            console.error("[v0] Error rendering app:", error);
+            document.getElementById('root').innerHTML = `
+                <div style="padding: 20px; text-align: center; font-family: system-ui;">
+                    <h2 style="color: #dc2626;">Error Loading Application</h2>
+                    <p>There was an error loading the malnutrition detection app.</p>
+                    <p style="color: #6b7280; font-size: 14px;">Check the browser console for more details.</p>
+                    <button onclick="location.reload()" style="margin-top: 16px; padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        Reload Page
+                    </button>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
