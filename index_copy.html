@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriScan - Malnutrition Detection</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👶</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            background: #f8f9ff;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .upload-area:hover {
+            background: #eef1ff;
+            border-color: #764ba2;
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .preview-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .preview-image {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px 5px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+        }
+        
+        .healthy {
+            background: #d4edda;
+            border: 2px solid #28a745;
+        }
+        
+        .malnourished {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+        }
+        
+        .result-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .file-info {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👶 NutriScan</h1>
+            <p>Intelligent Malnutrition Detection System</p>
+        </div>
+        
+        <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">📷</div>
+            <h3>Upload Child's Image</h3>
+            <p>Click or drag & drop an image file here</p>
+            <p style="font-size: 0.9rem; color: #666; margin-top: 10px;">Supported formats: JPG, JPEG, PNG</p>
+        </div>
+        
+        <input type="file" id="imageInput" accept="image/*" style="display: none;">
+        
+        <div id="previewContainer" style="display: none;">
+            <div class="preview-container">
+                <img id="previewImage" class="preview-image" src="" alt="Preview">
+                <div class="file-info" id="fileInfo"></div>
+            </div>
+            <div style="text-align: center;">
+                <button class="btn" onclick="analyzeImage()" id="analyzeBtn">
+                    <span class="loading" id="analyzeLoader" style="display: none;"></span>
+                    Analyze Image
+                </button>
+                <button class="btn" onclick="removeImage()" style="background: #6c757d;">Remove Image</button>
+            </div>
+        </div>
+        
+        <div id="result" class="result">
+            <div class="result-icon" id="resultIcon">🔍</div>
+            <h3 id="resultTitle">Analysis Result</h3>
+            <p id="resultText">Waiting for analysis...</p>
+            <p id="resultDetails" style="font-size: 0.9rem; margin-top: 10px;"></p>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const uploadArea = document.getElementById('uploadArea');
+        const imageInput = document.getElementById('imageInput');
+        const previewContainer = document.getElementById('previewContainer');
+        const previewImage = document.getElementById('previewImage');
+        const fileInfo = document.getElementById('fileInfo');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const analyzeLoader = document.getElementById('analyzeLoader');
+        const resultDiv = document.getElementById('result');
+        const resultIcon = document.getElementById('resultIcon');
+        const resultTitle = document.getElementById('resultTitle');
+        const resultText = document.getElementById('resultText');
+        const resultDetails = document.getElementById('resultDetails');
+
+        // Upload area click handler
+        uploadArea.addEventListener('click', () => {
+            imageInput.click();
+        });
+
+        // Drag and drop handlers
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.background = '#eef1ff';
+            uploadArea.style.borderColor = '#764ba2';
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.background = '#f8f9ff';
+            uploadArea.style.borderColor = '#667eea';
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.background = '#f8f9ff';
+            uploadArea.style.borderColor = '#667eea';
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleImageUpload(files[0]);
+            }
+        });
+
+        // File input change handler
+        imageInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleImageUpload(e.target.files[0]);
+            }
+        });
+
+        function handleImageUpload(file) {
+            if (!file.type.startsWith('image/')) {
+                alert('Please select a valid image file (JPG, PNG, etc.)');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImage.src = e.target.result;
+                uploadArea.style.display = 'none';
+                previewContainer.style.display = 'block';
+                resultDiv.style.display = 'none';
+                
+                // Show file info
+                const fileSize = (file.size / (1024 * 1024)).toFixed(2);
+                fileInfo.innerHTML = `
+                    <strong>File:</strong> ${file.name}<br>
+                    <strong>Size:</strong> ${fileSize} MB<br>
+                    <strong>Type:</strong> ${file.type}
+                `;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeImage() {
+            imageInput.value = '';
+            uploadArea.style.display = 'block';
+            previewContainer.style.display = 'none';
+            resultDiv.style.display = 'none';
+        }
+
+        async function analyzeImage() {
+            const file = imageInput.files[0];
+            if (!file) {
+                alert('Please upload an image first.');
+                return;
+            }
+
+            // Show loading state
+            analyzeLoader.style.display = 'inline-block';
+            analyzeBtn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                console.log('Sending request to API...');
+                
+                const response = await fetch('http://127.0.0.1:8000/predict/image', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('API Response:', data);
+                
+                // Display results
+                displayResults(data);
+
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result malnourished';
+                resultIcon.textContent = '❌';
+                resultTitle.textContent = 'Error';
+                resultText.textContent = 'Failed to analyze image';
+                resultDetails.textContent = error.message;
+                
+            } finally {
+                // Hide loading state
+                analyzeLoader.style.display = 'none';
+                analyzeBtn.disabled = false;
+            }
+        }
+
+        function displayResults(data) {
+            resultDiv.style.display = 'block';
+            
+            if (data.prediction === 'Healthy') {
+                resultDiv.className = 'result healthy';
+                resultIcon.textContent = '✅';
+                resultTitle.textContent = 'Healthy';
+                resultText.textContent = 'The child appears healthy with no visible signs of malnutrition';
+                resultDetails.textContent = `Filename: ${data.filename}`;
+            } else {
+                resultDiv.className = 'result malnourished';
+                resultIcon.textContent = '⚠️';
+                resultTitle.textContent = 'Malnourished';
+                resultText.textContent = 'Signs of malnutrition detected';
+                resultDetails.textContent = `Filename: ${data.filename} - Please consult a healthcare professional`;
+            }
+            
+            // Scroll to results
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
