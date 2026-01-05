@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+numpy
+pillow
+opencv-python-headless
+python-multipart
+tensorflow               # or tensorflow-cpu / tensorflow-intel depending on your environment
+h5py

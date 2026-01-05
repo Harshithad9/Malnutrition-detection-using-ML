@@ -1,0 +1,25 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environments
+backend_env/
+clean_backend/
+venv/
+env/
+
+# TensorFlow / ML models
+saved_model/
+*.h5
+*.keras
+
+# Datasets
+dataset/
+dataset_2/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
