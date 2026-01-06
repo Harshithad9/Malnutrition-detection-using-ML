@@ -71,16 +71,16 @@ and provides:
 ---
 
 ## 🔄 Application Workflow
-Image Upload
-↓
-Image Prediction
-↓
-Healthy → Stop
-Malnourished → Numeric Input
-↓
-Numeric Assessment
-↓
-Results + Recommendations + Report
+- Image Upload
+- ↓
+- Image Prediction
+- ↓
+- Healthy → Stop
+- Malnourished → Numeric Input
+- ↓
+- Numeric Assessment
+- ↓
+- Results + Recommendations + Report
 
 
 > ⚠️ Datasets, trained models, and virtual environments are excluded from this repository.
