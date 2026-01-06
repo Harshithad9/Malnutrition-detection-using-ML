@@ -1,174 +1,99 @@
-\# 🧒 Malnutrition Detection System using Image \& Numeric Analysis
+# 🧒 Child Malnutrition Detection System
 
+A machine learning–based web application that helps identify **child malnutrition** using a **two-step screening process**:  
+1. **Image-based analysis**  
+2. **Numeric health assessment (WHO-based indicators)**  
 
-
-A machine-learning–based application that helps parents and healthcare workers \*\*identify child malnutrition early\*\* using a combination of \*\*image analysis\*\* and \*\*numeric health indicators\*\*.
-
-
-
-The system is designed for children \*\*below 5 years of age\*\* and follows a \*\*two-step clinical workflow\*\*.
-
-
+Designed for children **below 5 years of age**, this system assists parents and healthcare workers in early malnutrition screening.
 
 ---
 
+## 📌 Problem Statement
 
+Child malnutrition is one of the leading causes of poor health and development in children.  
+In many cases, early signs go unnoticed due to lack of access to medical screening tools.
 
-\## 📌 Project Overview
-
-
-
-Malnutrition in children often goes undetected until it becomes severe.  
-
-This project provides a \*\*simple, accessible, and automated solution\*\* to assist in early screening.
-
-
-
-\### 🔹 Key Idea
-
-1\. \*\*Image-based screening\*\* identifies whether a child appears \*Healthy\* or \*Malnourished\*
-
-2\. \*\*Numeric assessment\*\* (only if malnourished) classifies the condition as:
-
-&nbsp;  - Stunted
-
-&nbsp;  - Wasted
-
-&nbsp;  - Underweight
-
-&nbsp;  - Overweight
-
-&nbsp;  - Acute malnutrition (MUAC-based)
-
-
+This project aims to provide a **simple, accessible, and automated solution** that performs **early malnutrition screening** using computer vision and numeric indicators.
 
 ---
 
+## 💡 Solution Overview
 
+The system follows a **conditional clinical workflow**:
 
-\## 🛠️ Tech Stack
+### 🔹 Step 1: Image Screening
+- User uploads an image of the child
+- A trained deep learning model predicts:
+  - **Healthy** → No further action required
+  - **Malnourished** → Proceed to numeric assessment
 
+### 🔹 Step 2: Numeric Assessment
+If malnourished, the user enters:
+- Age (in months)
+- Gender
+- Height (cm)
+- Weight (kg)
+- MUAC (optional)
 
+The system evaluates:
+- **Stunting**
+- **Wasting**
+- **Underweight / Overweight**
+- **Acute malnutrition (MUAC)**
 
-\### Backend
-
-\- \*\*Python\*\*
-
-\- \*\*FastAPI\*\*
-
-\- \*\*TensorFlow / Keras\*\*
-
-\- \*\*NumPy\*\*
-
-\- \*\*Pydantic\*\*
-
-
-
-\### Frontend
-
-\- \*\*HTML\*\*
-
-\- \*\*CSS\*\*
-
-\- \*\*JavaScript\*\*
-
-
-
-\### Machine Learning
-
-\- Image classification using \*\*EfficientNet\*\*
-
-\- Numeric assessment using \*\*WHO-based rules (BMI, height-for-age, weight-for-age, MUAC)\*\*
-
-
+and provides:
+- Primary condition
+- Severity level
+- BMI
+- Personalized recommendations
+- Downloadable clinical report
 
 ---
 
+## 🛠️ Tech Stack
 
+### Backend
+- Python
+- FastAPI
+- TensorFlow / Keras
+- NumPy
+- Pydantic
 
-\## 🔄 System Workflow
+### Frontend
+- HTML
+- CSS
+- JavaScript
 
-
-
-\### Step 1: Image Prediction
-
-\- User uploads an image of the child
-
-\- ML model predicts:
-
-&nbsp; - \*\*Healthy\*\* → process ends
-
-&nbsp; - \*\*Malnourished\*\* → numeric input form appears
-
-
-
-\### Step 2: Numeric Assessment
-
-User enters:
-
-\- Age (months)
-
-\- Gender
-
-\- Height (cm)
-
-\- Weight (kg)
-
-\- MUAC (optional)
-
-
-
-The system outputs:
-
-\- Primary nutritional condition
-
-\- Severity (Normal / Moderate / Severe)
-
-\- BMI
-
-\- Detailed breakdown
-
-\- Personalized health recommendations
-
-
+### Machine Learning
+- Image classification using EfficientNet
+- Rule-based numeric assessment aligned with WHO guidelines
 
 ---
 
+## 🔄 Application Workflow
+- Image Upload
+- ↓
+- Image Prediction
+- ↓
+- Healthy → Stop
+- Malnourished → Numeric Input
+- ↓
+- Numeric Assessment
+- ↓
+- Results + Recommendations + Report
 
 
-
-
-> ⚠️ Datasets, trained models, and virtual environments are intentionally excluded from GitHub.
-
-
+> ⚠️ Datasets, trained models, and virtual environments are excluded from this repository.
 
 ---
 
+## 🚀 How to Run the Project
 
-
-\## 🚀 How to Run the Project
-
-
-
-\### 1️⃣ Backend API
-
-
+### 1️⃣ Backend API
 
 ```bash
-
-cd backend\_api
-
-python -m venv clean\_backend
-
-clean\_backend\\Scripts\\activate
-
+cd backend_api
+python -m venv clean_backend
+clean_backend\Scripts\activate
 pip install -r requirements.txt
-
 uvicorn main:app --reload
-
-
-
-
-
-
-
