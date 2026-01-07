@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NutriScan - Malnutrition Assessment</title>
+  <link rel="stylesheet" href="stylef.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <div class="logo-icon">
+            <div class="logo-bars">
+              <span style="background: #FF6B35;"></span>
+              <span style="background: #004E89;"></span>
+              <span style="background: #1B9CFC;"></span>
+            </div>
+          </div>
+          <span class="logo-text">NutriScan</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" onclick="showSection('home')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span>Home</span>
+        </a>
+        <a href="#" class="nav-item" onclick="showSection('analyze')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+          <span>Analyze</span>
+        </a>
+        <a href="#" class="nav-item" onclick="showSection('about')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <span>About</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="version-info">
+          <p class="version-title">NutriScan v1.0</p>
+          <p class="version-desc">Intelligent Malnutrition Detection System</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-container">
+      <!-- HOME SECTION -->
+      <section id="home-section" class="content-section active">
+        <!-- Hero Banner -->
+        <div class="hero-banner">
+          <div class="hero-content">
+            <span class="hero-badge">⭐ Advanced AI Detection</span>
+            <h1 class="hero-title">Early Malnutrition Detection for Children</h1>
+            <p class="hero-subtitle">Intelligent image analysis and nutritional assessment for early malnutrition detection. Protect children's health with AI-powered screening.</p>
+            <div class="hero-buttons">
+              <button class="btn btn-primary" onclick="showSection('analyze')">Start Analysis</button>
+            </div>
+            <div class="trust-indicators">
+              <div class="trust-item">
+                <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 6v6l4 2"></path>
+                </svg>
+                <span>Offline Compatible</span>
+              </div>
+              <div class="trust-item">
+                <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+                </svg>
+                <span>WHO Standard Based</span>
+              </div>
+              <div class="trust-item">
+                <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"></path>
+                </svg>
+                <span>Child-Focused Screening</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value">90%</div>
+            <div class="stat-label">AI Accuracy Rate</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">30s</div>
+            <div class="stat-label">Analysis Time</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">🌍</div>
+            <div class="stat-label">Global Impact</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ANALYZE SECTION -->
+      <section id="analyze-section" class="content-section">
+        <div class="card" id="uploadCard">
+          <h2 class="card-title">Image Upload & Analysis</h2>
+          <h3 class="card-subtitle">Upload Child Image</h3>
+
+          <div class="upload-container">
+            <div class="upload-left">
+              <div class="upload-instructions">
+                <div class="instruction-item">
+                  <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12l5 5L20 7"></path>
+                  </svg>
+                  <span>Provide a clear frontal photo of the child</span>
+                </div>
+                <div class="instruction-item">
+                  <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12l5 5L20 7"></path>
+                  </svg>
+                  <span>Good lighting and visible body features</span>
+                </div>
+                <div class="instruction-item">
+                  <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12l5 5L20 7"></path>
+                  </svg>
+                  <span>No obstruction or accessories</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="upload-right">
+              <div class="upload-area" id="uploadArea">
+                <input type="file" id="childImage" accept="image/*" class="file-input" />
+                <div id="imagePreview" class="image-preview" style="display: none;">
+                  <img id="previewImg" src="C:\Users\rakshith\malnutrition_detection_using_ml\fronyend_final\Gemini_Generated_Image_ljpzprljpzprljpz.png" alt="Preview" />
+                  <button class="btn-clear" onclick="clearImage()" title="Remove image">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+                <label for="childImage" id="uploadLabel" class="upload-label">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
+                  <span class="upload-text">Click to upload or drag and drop</span>
+                  <span class="upload-hint">PNG, JPG, GIF up to 10MB</span>
+                </label>
+              </div>
+              <button class="btn btn-analyze" onclick="predictImage()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                Analyze Image
+              </button>
+            </div>
+          </div>
+
+          <p id="imageResult" class="result-message"></p>
+        </div>
+
+        <div class="card" id="numericSection" style="display: none;">
+          <h2 class="card-title">Detailed Assessment</h2>
+          <h3 class="card-subtitle">Enter Child Measurements</h3>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="age">Age (months)</label>
+              <input type="number" id="age" placeholder="e.g., 24" min="0" max="240" />
+            </div>
+            <div class="form-group">
+              <label for="gender">Gender</label>
+              <select id="gender">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="height">Height (cm)</label>
+              <input type="number" id="height" placeholder="e.g., 85.5" min="0" step="0.1" />
+            </div>
+            <div class="form-group">
+              <label for="weight">Weight (kg)</label>
+              <input type="number" id="weight" placeholder="e.g., 12.5" min="0" step="0.1" />
+            </div>
+            <div class="form-group">
+              <label for="muac">MUAC - (cm)</label>
+              <input type="number" id="muac" placeholder="e.g., 15.2" min="0" step="0.1" />
+            </div>
+          </div>
+
+          <button class="btn btn-primary" onclick="predictNumeric()">
+            Generate Assessment
+          </button>
+        </div>
+
+        <div class="card" id="healthySection" style="display: none;">
+          <div class="healthy-container">
+            <div class="healthy-checkmark">✓</div>
+            <h2 class="healthy-title">Baby is Healthy</h2>
+            <p class="healthy-message">The visual assessment shows no signs of malnutrition. Continue with normal health monitoring.</p>
+          </div>
+          <div class="action-buttons">
+            <button class="btn btn-primary" onclick="resetForm()">
+              Start New Assessment
+            </button>
+          </div>
+        </div>
+
+        <div class="card" id="resultSection" style="display: none;">
+          <h2 class="card-title">Analysis Results</h2>
+
+          <div class="results-grid">
+            <div class="result-box">
+              <span class="result-label">Primary Condition</span>
+              <span class="result-value" id="finalStatus">-</span>
+            </div>
+            <div class="result-box">
+              <span class="result-label">Severity Level</span>
+              <span class="result-value" id="severity">-</span>
+            </div>
+            <div class="result-box">
+              <span class="result-label">BMI</span>
+              <span class="result-value" id="bmi">-</span>
+            </div>
+          </div>
+
+          <div class="findings-section">
+            <h3>Clinical Findings</h3>
+            <div class="findings-grid">
+              <div class="finding-item">
+                <span class="finding-label">Wasting</span>
+                <span class="finding-value" id="wasting">-</span>
+              </div>
+              <div class="finding-item">
+                <span class="finding-label">Stunting</span>
+                <span class="finding-value" id="stunting">-</span>
+              </div>
+              <div class="finding-item">
+                <span class="finding-label">Underweight</span>
+                <span class="finding-value" id="underweight">-</span>
+              </div>
+              <div class="finding-item">
+                <span class="finding-label">MUAC Status</span>
+                <span class="finding-value" id="muacStatus">-</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recommendations-section">
+            <h3>Clinical Recommendations</h3>
+            <ul id="recommendations" class="recommendations-list"></ul>
+          </div>
+
+          <div class="action-buttons">
+            <button class="btn btn-primary" onclick="downloadReportPDF()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Download PDF Report
+            </button>
+            <button class="btn btn-secondary" onclick="resetForm()">
+              Start New Assessment
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABOUT SECTION -->
+      <section id="about-section" class="content-section">
+        <div class="about-hero">
+          <h1 class="about-hero-title">About NutriScan</h1>
+          <p class="about-hero-subtitle">Intelligent Malnutrition Detection System for Early Child Health Screening</p>
+        </div>
+
+        <div class="card about-card">
+          <div class="card-content">
+            <h2 class="section-title">What is NutriScan?</h2>
+            <p class="section-description">NutriScan is an intelligent screening tool designed to detect early signs of malnutrition in children through advanced image analysis and anthropometric assessment. Our system combines cutting-edge AI technology with WHO-based nutritional metrics to provide comprehensive health evaluations accessible to healthcare workers globally.</p>
+          </div>
+        </div>
+
+        <div class="card about-card">
+          <div class="card-content">
+            <h2 class="section-title">Key Features</h2>
+            <div class="features-grid">
+              <div class="feature-card">
+                <div class="feature-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                </div>
+                <h3 class="feature-title">AI Image Screening</h3>
+                <p class="feature-desc">Advanced computer vision technology analyzes child photos for initial visual assessment of nutritional status</p>
+              </div>
+
+              <div class="feature-card">
+                <div class="feature-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 11l3 3L22 4"></path>
+                    <path d="M20 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                  </svg>
+                </div>
+                <h3 class="feature-title">WHO-Based Metrics</h3>
+                <p class="feature-desc">Calculations aligned with World Health Organization standards for accurate nutritional assessment</p>
+              </div>
+
+              <div class="feature-card">
+                <div class="feature-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                  </svg>
+                </div>
+                <h3 class="feature-title">PDF Report Generation</h3>
+                <p class="feature-desc">Professional, printable reports with comprehensive clinical findings and recommendations</p>
+              </div>
+
+              <div class="feature-card">
+                <div class="feature-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </div>
+                <h3 class="feature-title">Evidence-Based Recommendations</h3>
+                <p class="feature-desc">Clinical guidance based on nutritional science and best practices for child health</p>
+              </div>
+
+              <div class="feature-card">
+                <div class="feature-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                </div>
+                <h3 class="feature-title">Multi-Metric Evaluation</h3>
+                <p class="feature-desc">Comprehensive analysis including BMI, Wasting, Stunting, and MUAC measurements</p>
+              </div>
+
+              <div class="feature-card">
+                <div class="feature-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path>
+                    <path d="M9.5 9a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0z"></path>
+                    <path d="M12 15c-1.5 0-2.5-1-2.5-2"></path>
+                  </svg>
+                </div>
+                <h3 class="feature-title">Offline Compatible</h3>
+                <p class="feature-desc">Works without internet connection, ensuring accessibility in resource-limited settings</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card about-card">
+          <div class="card-content">
+            <h2 class="section-title">How It Works</h2>
+            <div class="workflow-container">
+              <div class="workflow-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h3>Upload Child Image</h3>
+                  <p>Capture or upload a clear frontal photo of the child for visual assessment</p>
+                </div>
+              </div>
+
+              <div class="workflow-arrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12h14"></path>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </div>
+
+              <div class="workflow-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h3>Initial Visual Assessment</h3>
+                  <p>AI analyzes the image to identify potential signs of malnutrition</p>
+                </div>
+              </div>
+
+              <div class="workflow-arrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12h14"></path>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </div>
+
+              <div class="workflow-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <h3>Enter Measurements</h3>
+                  <p>Input anthropometric data (age, height, weight, MUAC) for detailed assessment</p>
+                </div>
+              </div>
+
+              <div class="workflow-arrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12h14"></path>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </div>
+
+              <div class="workflow-step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                  <h3>Receive Analysis</h3>
+                  <p>Get comprehensive results with BMI, nutritional status, and clinical findings</p>
+                </div>
+              </div>
+
+              <div class="workflow-arrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12h14"></path>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </div>
+
+              <div class="workflow-step">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                  <h3>Download Report</h3>
+                  <p>Generate and download professional PDF report with recommendations</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        
+
+        
+      </section>
+    </main>
+  </div>
+
+  <!-- Malnutrition Learn More Modal -->
+  <div id="malnutritionModal" style="display: none;">
+    <div class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Understanding Malnutrition</h2>
+          <button class="modal-close" onclick="closeMalnutritionModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="malnutrition-section">
+            <h3>What is Malnutrition?</h3>
+            <p>Malnutrition is a condition that develops when the body does not get enough nutrients to function properly. In children, early malnutrition can lead to impaired growth, cognitive development issues, and weakened immunity. Early detection and intervention are critical for optimal child development.</p>
+          </div>
+
+          <div class="malnutrition-section">
+            <h3>Types of Malnutrition</h3>
+            
+            <div class="malnutrition-type">
+              <h4>1. Wasting <span class="severity-badge">Acute</span></h4>
+              <p>Characterized by rapid weight loss and low weight-for-height ratio. This is the most visible form of acute malnutrition and requires immediate intervention.</p>
+            </div>
+
+            <div class="malnutrition-type">
+              <h4>2. Stunting <span class="severity-badge">Chronic</span></h4>
+              <p>Results from prolonged inadequate nutrition, causing reduced height-for-age. This reflects chronic malnutrition and impacts long-term development.</p>
+            </div>
+
+            <div class="malnutrition-type">
+              <h4>3. Underweight <span class="severity-badge">Mixed</span></h4>
+              <p>Indicates low weight-for-age, which can result from either acute or chronic malnutrition or both. This is a general indicator of poor nutritional status.</p>
+            </div>
+
+            <div class="malnutrition-type">
+              <h4>4. Micronutrient Deficiencies <span class="severity-badge">Hidden</span></h4>
+              <p>Deficiencies in vitamins and minerals (iron, iodine, Vitamin A, etc.) that may not always be visible but severely impact immune function and development.</p>
+            </div>
+          </div>
+
+          <div class="malnutrition-section">
+            <h3>Risk Factors</h3>
+            <p>Common risk factors include inadequate dietary intake, poor feeding practices, infections, unsanitary living conditions, maternal malnutrition, and limited access to healthcare services.</p>
+          </div>
+
+          <div class="malnutrition-section">
+            <h3>Health Consequences</h3>
+            <p>Malnutrition weakens immune function, increases vulnerability to infections, impairs cognitive development, reduces growth potential, and can have lifelong impacts on physical and mental health.</p>
+          </div>
+
+          <div class="malnutrition-section">
+            <h3>Why Early Detection Matters</h3>
+            <p>Early identification of malnutrition signs allows for timely nutritional interventions, improved treatment outcomes, and prevention of serious complications. NutriScan helps healthcare workers rapidly screen for potential malnutrition using both visual and anthropometric assessments.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="scriptf.js"></script>
+</body>
+</html>
