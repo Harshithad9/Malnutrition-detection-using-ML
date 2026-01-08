@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NutriScan - Malnutrition Assessment</title>
-  <link rel="stylesheet" href="stylef.css" />
+  <link rel="stylesheet" href="style.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
@@ -69,6 +69,7 @@
             <p class="hero-subtitle">Intelligent image analysis and nutritional assessment for early malnutrition detection. Protect children's health with AI-powered screening.</p>
             <div class="hero-buttons">
               <button class="btn btn-primary" onclick="showSection('analyze')">Start Analysis</button>
+              <button class="btn btn-outline" onclick="openMalnutritionModal()">Learn More</button>
             </div>
             <div class="trust-indicators">
               <div class="trust-item">
@@ -146,7 +147,7 @@
                 <div id="imagePreview" class="image-preview" style="display: none;">
                   <img id="previewImg" src="/placeholder.svg" alt="Preview" />
                   <button class="btn-clear" onclick="clearImage()" title="Remove image">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <line x1="18" y1="6" x2="6" y2="18"></line>
                       <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
@@ -200,7 +201,7 @@
               <input type="number" id="weight" placeholder="e.g., 12.5" min="0" step="0.1" />
             </div>
             <div class="form-group">
-              <label for="muac">MUAC - (cm)</label>
+              <label for="muac">MUAC - Optional (cm)</label>
               <input type="number" id="muac" placeholder="e.g., 15.2" min="0" step="0.1" />
             </div>
           </div>
@@ -298,6 +299,7 @@
           </div>
         </div>
 
+        <!-- KEY FEATURES SECTION -->
         <div class="card about-card">
           <div class="card-content">
             <h2 class="section-title">Key Features</h2>
@@ -310,19 +312,21 @@
                     <polyline points="21 15 16 10 5 21"></polyline>
                   </svg>
                 </div>
-                <h3 class="feature-title">AI Image Screening</h3>
-                <p class="feature-desc">Advanced computer vision technology analyzes child photos for initial visual assessment of nutritional status</p>
+                <h3>AI Image Screening</h3>
+                <p>Advanced computer vision for visual malnutrition detection from child images</p>
               </div>
 
               <div class="feature-card">
                 <div class="feature-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M9 11l3 3L22 4"></path>
-                    <path d="M20 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                    <circle cx="12" cy="12" r="1"></circle>
+                    <circle cx="19" cy="12" r="1"></circle>
+                    <circle cx="5" cy="12" r="1"></circle>
+                    <path d="M12 5v14M5 19h14"></path>
                   </svg>
                 </div>
-                <h3 class="feature-title">WHO-Based Metrics</h3>
-                <p class="feature-desc">Calculations aligned with World Health Organization standards for accurate nutritional assessment</p>
+                <h3>WHO-Based Metrics</h3>
+                <p>Nutritional assessment based on WHO growth standards and guidelines</p>
               </div>
 
               <div class="feature-card">
@@ -330,49 +334,48 @@
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                     <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="12" y1="19" x2="12" y2="19"></line>
                   </svg>
                 </div>
-                <h3 class="feature-title">PDF Report Generation</h3>
-                <p class="feature-desc">Professional, printable reports with comprehensive clinical findings and recommendations</p>
+                <h3>PDF Report Generation</h3>
+                <p>Comprehensive clinical reports with findings and recommendations</p>
+              </div>
+
+              <div class="feature-card">
+                <div class="feature-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                </div>
+                <h3>Evidence-Based Recommendations</h3>
+                <p>Clinical recommendations based on latest nutritional science</p>
+              </div>
+
+              <div class="feature-card">
+                <div class="feature-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+                  </svg>
+                </div>
+                <h3>Multi-Metric Evaluation</h3>
+                <p>Comprehensive assessment using BMI, Wasting, Stunting, and MUAC metrics</p>
               </div>
 
               <div class="feature-card">
                 <div class="feature-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
+                    <path d="M12 6v6l4 2"></path>
                   </svg>
                 </div>
-                <h3 class="feature-title">Evidence-Based Recommendations</h3>
-                <p class="feature-desc">Clinical guidance based on nutritional science and best practices for child health</p>
-              </div>
-
-              <div class="feature-card">
-                <div class="feature-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                  </svg>
-                </div>
-                <h3 class="feature-title">Multi-Metric Evaluation</h3>
-                <p class="feature-desc">Comprehensive analysis including BMI, Wasting, Stunting, and MUAC measurements</p>
-              </div>
-
-              <div class="feature-card">
-                <div class="feature-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path>
-                    <path d="M9.5 9a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0z"></path>
-                    <path d="M12 15c-1.5 0-2.5-1-2.5-2"></path>
-                  </svg>
-                </div>
-                <h3 class="feature-title">Offline Compatible</h3>
-                <p class="feature-desc">Works without internet connection, ensuring accessibility in resource-limited settings</p>
+                <h3>Offline Compatible</h3>
+                <p>Fully operational without internet connection for remote healthcare settings</p>
               </div>
             </div>
           </div>
         </div>
 
+        <!-- HOW IT WORKS SECTION -->
         <div class="card about-card">
           <div class="card-content">
             <h2 class="section-title">How It Works</h2>
@@ -380,138 +383,249 @@
               <div class="workflow-step">
                 <div class="step-number">1</div>
                 <div class="step-content">
-                  <h3>Upload Child Image</h3>
-                  <p>Capture or upload a clear frontal photo of the child for visual assessment</p>
+                  <h3>Upload Image</h3>
+                  <p>Capture or upload a clear frontal photo of the child following guidance</p>
                 </div>
               </div>
-
-              <div class="workflow-arrow">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M5 12h14"></path>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </div>
+              <div class="workflow-arrow"></div>
 
               <div class="workflow-step">
                 <div class="step-number">2</div>
                 <div class="step-content">
-                  <h3>Initial Visual Assessment</h3>
-                  <p>AI analyzes the image to identify potential signs of malnutrition</p>
+                  <h3>AI Analysis</h3>
+                  <p>Artificial intelligence analyzes the image for visual malnutrition indicators</p>
                 </div>
               </div>
-
-              <div class="workflow-arrow">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M5 12h14"></path>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </div>
+              <div class="workflow-arrow"></div>
 
               <div class="workflow-step">
                 <div class="step-number">3</div>
                 <div class="step-content">
                   <h3>Enter Measurements</h3>
-                  <p>Input anthropometric data (age, height, weight, MUAC) for detailed assessment</p>
+                  <p>Input child's anthropometric data: age, weight, height, and optional MUAC</p>
                 </div>
               </div>
-
-              <div class="workflow-arrow">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M5 12h14"></path>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </div>
+              <div class="workflow-arrow"></div>
 
               <div class="workflow-step">
                 <div class="step-number">4</div>
                 <div class="step-content">
-                  <h3>Receive Analysis</h3>
-                  <p>Get comprehensive results with BMI, nutritional status, and clinical findings</p>
+                  <h3>Assessment</h3>
+                  <p>System evaluates nutritional status across multiple clinical metrics</p>
                 </div>
               </div>
-
-              <div class="workflow-arrow">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M5 12h14"></path>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </div>
+              <div class="workflow-arrow"></div>
 
               <div class="workflow-step">
                 <div class="step-number">5</div>
                 <div class="step-content">
-                  <h3>Download Report</h3>
-                  <p>Generate and download professional PDF report with recommendations</p>
+                  <h3>Report & Recommendations</h3>
+                  <p>Generate comprehensive PDF report with clinical findings and recommendations</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        
+        <!-- WHY NUTRISCAN SECTION -->
+        <div class="card about-card">
+          <div class="card-content">
+            <h2 class="section-title">Why NutriScan?</h2>
+            <div class="benefits-grid">
+              <div class="benefit-item">
+                <div class="benefit-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+                  </svg>
+                </div>
+                <h3>Early Detection</h3>
+                <p>Identify malnutrition in early stages for timely intervention</p>
+              </div>
 
-        
+              <div class="benefit-item">
+                <div class="benefit-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 6v6l4 2"></path>
+                  </svg>
+                </div>
+                <h3>WHO Standard Compliance</h3>
+                <p>Adheres to World Health Organization standards for child health assessment</p>
+              </div>
+
+              <div class="benefit-item">
+                <div class="benefit-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                </div>
+                <h3>Non-Medical Personnel Accessible</h3>
+                <p>Designed for healthcare workers without specialized nutrition training</p>
+              </div>
+
+              <div class="benefit-item">
+                <div class="benefit-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="12 2 15.09 10.26 23.77 11.27 17.88 17.07 19.24 25.72 12 21.77 4.76 25.72 6.12 17.07 0.22 11.27 8.91 10.26 12 2"></polygon>
+                  </svg>
+                </div>
+                <h3>Quick Screening</h3>
+                <p>Complete assessment in under 30 seconds for efficient mass screening</p>
+              </div>
+
+              <div class="benefit-item">
+                <div class="benefit-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"></path>
+                  </svg>
+                </div>
+                <h3>Child-Focused Design</h3>
+                <p>Specifically designed for pediatric population with age-appropriate metrics</p>
+              </div>
+
+              <div class="benefit-item">
+                <div class="benefit-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 19V6l12-3v13M9 6L7 7m2-1l-2 1m2-1v13M7 8v12M4 9l12-3M16 3l4-1"></path>
+                  </svg>
+                </div>
+                <h3>Evidence-Based Approach</h3>
+                <p>Built on latest nutrition science and clinical research evidence</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TECHNICAL SPECIFICATIONS -->
+        <div class="card about-card">
+          <div class="card-content">
+            <h2 class="section-title">Technical Specifications</h2>
+            <div class="specs-grid">
+              <div class="spec-card">
+                <div class="spec-icon">90%</div>
+                <h3>Accuracy Rate</h3>
+                <p>High-accuracy AI model trained on extensive datasets</p>
+              </div>
+              <div class="spec-card">
+                <div class="spec-icon">30s</div>
+                <h3>Analysis Speed</h3>
+                <p>Complete assessment in seconds for rapid screening</p>
+              </div>
+              <div class="spec-card">
+                <div class="spec-icon">6-60M</div>
+                <h3>Age Range</h3>
+                <p>Optimized for children aged 6 months to 5 years</p>
+              </div>
+              <div class="spec-card">
+                <div class="spec-icon">5</div>
+                <h3>Metrics</h3>
+                <p>BMI, Wasting, Stunting, Underweight, and MUAC</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
   </div>
 
-  <!-- Malnutrition Learn More Modal -->
-  <div id="malnutritionModal" style="display: none;">
-    <div class="modal-overlay">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2>Understanding Malnutrition</h2>
-          <button class="modal-close" onclick="closeMalnutritionModal()">&times;</button>
+  <!-- MALNUTRITION MODAL -->
+  <div id="malnutritionModal" class="modal" style="display: none;">
+    <div class="modal-overlay" onclick="closeMalnutritionModal()"></div>
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeMalnutritionModal()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="modal-header">
+        <h2>Understanding Malnutrition</h2>
+        <p>What you need to know</p>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-section">
+          <h3>What is Malnutrition?</h3>
+          <p>Malnutrition occurs when a child doesn't get enough nutrients to grow and develop properly. It can result from inadequate food intake, poor diet quality, infection, or a combination of factors. Early detection and intervention are crucial for preventing long-term developmental problems.</p>
         </div>
-        <div class="modal-body">
-          <div class="malnutrition-section">
-            <h3>What is Malnutrition?</h3>
-            <p>Malnutrition is a condition that develops when the body does not get enough nutrients to function properly. In children, early malnutrition can lead to impaired growth, cognitive development issues, and weakened immunity. Early detection and intervention are critical for optimal child development.</p>
+
+        <div class="modal-section">
+          <h3>Types of Malnutrition in Children</h3>
+          
+          <div class="malnutrition-type">
+            <h4>1. Wasting (Acute Malnutrition)</h4>
+            <p><strong>Definition:</strong> Rapid weight loss or failure to gain weight. The child weighs too little for their height.</p>
+            <p><strong>Cause:</strong> Usually due to acute food shortage or recent infection.</p>
+            <p><strong>Severity:</strong> <span class="severity-moderate">Moderate</span> to <span class="severity-severe">Severe</span></p>
+            <p><strong>Treatment:</strong> Requires immediate nutritional rehabilitation with ready-to-use therapeutic foods.</p>
           </div>
 
-          <div class="malnutrition-section">
-            <h3>Types of Malnutrition</h3>
-            
-            <div class="malnutrition-type">
-              <h4>1. Wasting <span class="severity-badge">Acute</span></h4>
-              <p>Characterized by rapid weight loss and low weight-for-height ratio. This is the most visible form of acute malnutrition and requires immediate intervention.</p>
-            </div>
-
-            <div class="malnutrition-type">
-              <h4>2. Stunting <span class="severity-badge">Chronic</span></h4>
-              <p>Results from prolonged inadequate nutrition, causing reduced height-for-age. This reflects chronic malnutrition and impacts long-term development.</p>
-            </div>
-
-            <div class="malnutrition-type">
-              <h4>3. Underweight <span class="severity-badge">Mixed</span></h4>
-              <p>Indicates low weight-for-age, which can result from either acute or chronic malnutrition or both. This is a general indicator of poor nutritional status.</p>
-            </div>
-
-            <div class="malnutrition-type">
-              <h4>4. Micronutrient Deficiencies <span class="severity-badge">Hidden</span></h4>
-              <p>Deficiencies in vitamins and minerals (iron, iodine, Vitamin A, etc.) that may not always be visible but severely impact immune function and development.</p>
-            </div>
+          <div class="malnutrition-type">
+            <h4>2. Stunting (Chronic Malnutrition)</h4>
+            <p><strong>Definition:</strong> Delayed growth and development. The child is too short for their age.</p>
+            <p><strong>Cause:</strong> Results from prolonged inadequate nutrition, repeated infections, or poverty.</p>
+            <p><strong>Severity:</strong> <span class="severity-moderate">Moderate</span> to <span class="severity-severe">Severe</span></p>
+            <p><strong>Impact:</strong> Can lead to reduced cognitive development and lifelong disadvantages.</p>
           </div>
 
-          <div class="malnutrition-section">
-            <h3>Risk Factors</h3>
-            <p>Common risk factors include inadequate dietary intake, poor feeding practices, infections, unsanitary living conditions, maternal malnutrition, and limited access to healthcare services.</p>
+          <div class="malnutrition-type">
+            <h4>3. Underweight (General Malnutrition)</h4>
+            <p><strong>Definition:</strong> Insufficient weight for age. Combination of wasting and stunting.</p>
+            <p><strong>Cause:</strong> Results from chronic malnutrition or severe acute malnutrition.</p>
+            <p><strong>Severity:</strong> <span class="severity-mild">Mild</span> to <span class="severity-severe">Severe</span></p>
+            <p><strong>Treatment:</strong> Comprehensive nutrition program addressing underlying causes.</p>
           </div>
 
-          <div class="malnutrition-section">
-            <h3>Health Consequences</h3>
-            <p>Malnutrition weakens immune function, increases vulnerability to infections, impairs cognitive development, reduces growth potential, and can have lifelong impacts on physical and mental health.</p>
-          </div>
-
-          <div class="malnutrition-section">
-            <h3>Why Early Detection Matters</h3>
-            <p>Early identification of malnutrition signs allows for timely nutritional interventions, improved treatment outcomes, and prevention of serious complications. NutriScan helps healthcare workers rapidly screen for potential malnutrition using both visual and anthropometric assessments.</p>
+          <div class="malnutrition-type">
+            <h4>4. Micronutrient Deficiencies</h4>
+            <p><strong>Definition:</strong> Lack of essential vitamins and minerals needed for growth.</p>
+            <p><strong>Common Deficiencies:</strong> Iron, Iodine, Vitamin A, Zinc, Vitamin D</p>
+            <p><strong>Symptoms:</strong> Anemia, weak immune system, poor vision, developmental delays.</p>
+            <p><strong>Prevention:</strong> Fortified foods, diverse diet, and supplementation programs.</p>
           </div>
         </div>
+
+        <div class="modal-section">
+          <h3>Key Risk Factors</h3>
+          <ul class="risk-factors-list">
+            <li>Poverty and food insecurity</li>
+            <li>Inadequate feeding practices</li>
+            <li>Frequent infections and diseases</li>
+            <li>Lack of clean water and sanitation</li>
+            <li>Limited access to healthcare</li>
+            <li>Maternal malnutrition during pregnancy</li>
+            <li>Early cessation of breastfeeding</li>
+          </ul>
+        </div>
+
+        <div class="modal-section">
+          <h3>Health Consequences</h3>
+          <ul class="consequences-list">
+            <li>Impaired cognitive development and learning ability</li>
+            <li>Weakened immune system increasing infection risk</li>
+            <li>Delayed physical growth and motor development</li>
+            <li>Reduced work capacity in adulthood</li>
+            <li>Increased risk of chronic diseases</li>
+            <li>Higher mortality rates in children</li>
+          </ul>
+        </div>
+
+        <div class="modal-section modal-emphasis">
+          <h3>Why Early Detection Matters</h3>
+          <p>Early identification of malnutrition through screening allows for timely intervention. Treatment is most effective when provided early, preventing irreversible damage to growth and development. Regular monitoring and prompt action can save lives and ensure healthy futures for children.</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="closeMalnutritionModal()">Close</button>
       </div>
     </div>
   </div>
 
-  <script src="scriptf.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

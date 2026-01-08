@@ -125,7 +125,7 @@ async function predictImage() {
       document.getElementById("numericSection").style.display = "block"
       document.getElementById("numericSection").scrollIntoView({ behavior: "smooth" })
     } else {
-      resultEl.textContent = "✓ Visual assessment shows no obvious signs of malnutrition. No further evaluation needed."
+      resultEl.textContent = "✓ BABY IS HEALTHY!!!!!  Visual assessment shows no obvious signs of malnutrition. No further evaluation needed."
       resultEl.className = "result-message success"
     }
   } catch (error) {
