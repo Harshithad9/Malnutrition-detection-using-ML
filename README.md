@@ -122,6 +122,11 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
+## The backend will run at: http://localhost:8000
+
+- API Documentation
+- Swagger UI: http://localhost:8000/docs
+
 ## 2️⃣ Frontend 
 
 ```bash
