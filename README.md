@@ -120,8 +120,14 @@ pip install -r requirements.txt
 
 # Start the backend server
 uvicorn main:app --reload
+```
 
-The backend will run at: http://localhost:8000
+## 2️⃣ Frontend 
 
-API Documentation
-Swagger UI: http://localhost:8000/docs
+```bash
+# Navigate to frontend directory
+cd frontend
+
+# If you have Python's simple HTTP server:
+python -m http.server 5500
+# Or if using VS Code, right-click index.html and select "Open with Live Server"
