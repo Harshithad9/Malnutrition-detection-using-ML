@@ -89,11 +89,39 @@ and provides:
 
 ## 🚀 How to Run the Project
 
-### 1️⃣ Backend API
+# 🚀 How to Run the Project
+
+## 📋 Prerequisites
+- Python 3.8 or higher
+- Node.js (for frontend)
+- Git
+
+---
+
+## 1️⃣ Backend API
+
+### Setup and Run
 
 ```bash
+# Navigate to backend directory
 cd backend_api
+
+# Create virtual environment
 python -m venv clean_backend
+
+# Activate virtual environment
+# On Windows:
 clean_backend\Scripts\activate
+# On Mac/Linux:
+source clean_backend/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
+
+# Start the backend server
 uvicorn main:app --reload
+
+The backend will run at: http://localhost:8000
+
+API Documentation
+Swagger UI: http://localhost:8000/docs
